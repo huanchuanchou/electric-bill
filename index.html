@@ -258,7 +258,7 @@
                     <input type="file" id="importFile" accept=".json" class="hidden" onchange="importData(this)">
                 </label>
             </div>
-            <p class="text-xs text-center text-gray-300 mt-2">v1.3</p>
+            <p class="text-xs text-center text-gray-300 mt-2">v1.4</p>
         </div>
     </div>
 
@@ -624,10 +624,15 @@
         }
 
         function copyToClipboard() {
-            const unitPrice = document.getElementById('unitPriceDisplay').innerText;
-            const totalUsage = document.getElementById('totalUsageDisplay').innerText;
-            const bill = document.getElementById('totalBill').value;
-            // 讀取當下填寫的內容
+            if (!currentResultData) {
+                 showToast('請先進行計算');
+                 return;
+            }
+
+            const unitPrice = currentResultData.unitPrice.toFixed(2);
+            const totalUsage = currentResultData.totalUsage;
+            const bill = currentResultData.billTotal;
+            
             const period = document.getElementById('recordPeriod').value.trim();
             const note = document.getElementById('recordNote').value.trim();
             
@@ -638,12 +643,20 @@
             text += `總用電: ${totalUsage}度\n`;
             text += `平均電價: $${unitPrice}/度\n`;
             text += `----------------\n`;
-            document.querySelectorAll('#breakdownList > div').forEach(row => {
-                const name = row.querySelector('.font-bold.text-sm').innerText;
-                const usage = row.querySelector('.text-xs.text-gray-400').innerText;
-                const cost = row.querySelector('.font-bold.text-slate-700').innerText;
-                text += `🏠 房${name}: ${cost} (${usage})\n`;
+            
+            // 度數變化區塊
+            currentResultData.details.forEach(d => {
+                text += `🏠 房${d.name}: ${d.prev}--->${d.curr} (使用 ${d.usage} 度)\n`;
             });
+
+            text += `----------------\n`;
+            text += `(使用度數*平均電價)\n`;
+
+            // 費用區塊
+            currentResultData.details.forEach(d => {
+                text += `🏠 房${d.name}: $${d.cost}\n`;
+            });
+
             if (note) {
                 text += `----------------\n`;
                 text += `📝 備註: ${note}\n`;
@@ -702,5 +715,4 @@
         }
     </script>
 </body>
-
 </html>
