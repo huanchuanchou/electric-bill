@@ -37,7 +37,7 @@
         .history-panel.open {
             transform: translateX(0);
         }
-        /* Toast 通知 */
+        /* Toast 通知 (層級提高到 70) */
         .toast {
             position: fixed;
             bottom: 20px;
@@ -51,7 +51,7 @@
             opacity: 0;
             transition: opacity 0.3s;
             pointer-events: none;
-            z-index: 100;
+            z-index: 70; 
         }
         .toast.show {
             opacity: 1;
@@ -185,8 +185,8 @@
     <!-- 提示訊息 Toast -->
     <div id="toast" class="toast"></div>
 
-    <!-- 自製確認對話框 -->
-    <div id="confirmModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
+    <!-- 自製確認對話框 (層級提高到 60，確保蓋在歷史面板 50 之上) -->
+    <div id="confirmModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
         <div class="bg-white rounded-2xl p-6 w-11/12 max-w-sm shadow-2xl transform scale-95 transition-transform duration-300" id="confirmBox">
             <h3 class="text-lg font-bold text-slate-800 mb-2" id="confirmTitle">確認</h3>
             <p class="text-slate-600 mb-6" id="confirmMessage">確定要執行此動作嗎？</p>
@@ -201,7 +201,7 @@
         資料儲存於您的瀏覽器中，不會上傳伺服器
     </footer>
 
-    <!-- 歷史紀錄側邊欄 (Modal) -->
+    <!-- 歷史紀錄側邊欄 (Modal) (層級 50) -->
     <div id="historyOverlay" onclick="toggleHistory()" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 hidden opacity-0 transition-opacity duration-300"></div>
     <div id="historyPanel" class="history-panel closed fixed top-0 right-0 h-full w-full max-w-sm bg-white shadow-2xl z-50 flex flex-col">
         <!-- 標題 -->
@@ -258,7 +258,7 @@
                     <input type="file" id="importFile" accept=".json" class="hidden" onchange="importData(this)">
                 </label>
             </div>
-            <p class="text-xs text-center text-gray-300 mt-2">v1.4</p>
+            <p class="text-xs text-center text-gray-300 mt-2">v1.5</p>
         </div>
     </div>
 
@@ -644,7 +644,6 @@
             text += `平均電價: $${unitPrice}/度\n`;
             text += `----------------\n`;
             
-            // 度數變化區塊
             currentResultData.details.forEach(d => {
                 text += `🏠 房${d.name}: ${d.prev}--->${d.curr} (使用 ${d.usage} 度)\n`;
             });
@@ -652,7 +651,6 @@
             text += `----------------\n`;
             text += `(使用度數*平均電價)\n`;
 
-            // 費用區塊
             currentResultData.details.forEach(d => {
                 text += `🏠 房${d.name}: $${d.cost}\n`;
             });
@@ -716,3 +714,6 @@
     </script>
 </body>
 </html>
+
+
+
